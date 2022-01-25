@@ -1,0 +1,124 @@
+<nav class="navbar navbar-light bg-dark">
+    <div class="container-fluid">
+        <h1 style="color: rgb(24, 230, 230);">Customer Dashboard</h1>
+        <div class="d-flex">
+            <input type="text" name="search" id="search" class="search" placeholder="Search here..."/>
+            <button (click)="clickGenerate()" class="btn btn-success" id="btnGenerate" type="button"
+                data-bs-toggle="modal" data-bs-target="#exampleModal">ADD CUSTOMER</button>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <table class="table mt-3" id="customerDataTable">
+        <thead>
+            <tr>
+                <th scope="col">Customer#</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Address</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of customerData">
+                <td>{{row.customerId}}</td>
+                <td>{{row.customerName}}</td>
+                <td>{{row.phone}}</td>
+                <td>{{row.address}}</td>
+                <td>{{row.email}}</td>
+                <td>
+                    <button (click)="onEdit(row)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        class="btn btn-warning mx-3 btn">UPDATE</button>
+                    <button (click)="deleteCustomer(row)" class="btn btn-danger mx-3">DELETE</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Customer Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="formValue">
+                        <div class="mb-3">
+                            <label for="lblCustName" class="form-label">Customer Name</label>
+                            <input type="text" formControlName="txtCustName" class="form-control" id="txtCustName"
+                                onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)"
+                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                maxlength="100">
+                            <span class="text-danger"
+                                *ngIf="formValue.controls['txtCustName'].dirty && formValue.hasError('required','txtCustName')">
+                                *Customer Name is required</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lblCustPhone" class="form-label">Phone (Ex:77XXXXXXX)</label>
+                            <input name="Phone" class="form-control" formControlName="txtCustPhone" id="txtCustPhone"
+                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);if(this.value<=0) this.value= '';event.target.value.replce(/[^0-9]*/g,'');"
+                                maxlength="9" type="number" onkeydown="if(event.key ==='.'){event.preventDefault();}">
+                            <span class="text-danger"
+                                *ngIf="formValue.controls['txtCustPhone'].dirty && formValue.hasError('required','txtCustPhone')">
+                                *Phone Number is required</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lblCustName" class="form-label">Address</label>
+                            <textarea class="form-control" formControlName="txtCustAddress" id="txtCustAddress" rows="3"
+                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                maxlength="500">
+                             </textarea>
+                            <span class="text-danger"
+                                *ngIf="formValue.controls['txtCustAddress'].dirty && formValue.hasError('required','txtCustAddress')">
+                                *Address is required</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lblCustName" class="form-label">Email</label>
+                            <input type="email" formControlName="txtCustEmail" class="form-control" id="txtCustEmail"
+                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                maxlength="100"
+                                >
+                                <span class="text-danger" *ngIf="formValue.controls['txtCustEmail'].dirty && formValue.hasError('required','txtCustEmail')"> *Email is required</span>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" id="btnclose" class="btn btn-secondary"
+                            data-bs-dismiss="modal">CLOSE</button>
+                        <button id="btnGen" *ngIf="showGenerate" type="submit" [disabled]="!formValue.valid"
+                            (click)="postCustomerDetails()" class="btn btn-primary">ADD</button>
+                        <button *ngIf="showUpdate" id="btnSave" type="buton" (click)="updateCustomerDetails()"
+                            class="btn btn-primary">SAVE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Search functionality -->
+<script>  
+    $(document).ready(function(){  
+         $('#search').keyup(function(){  
+              search_table($(this).val());  
+         });  
+         function search_table(value){  
+              $('#customerDataTable tr').each(function(){  
+                   var found = 'false';  
+                   $(this).each(function(){  
+                        if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0)  
+                        {  
+                             found = 'true';  
+                        }  
+                   });  
+                   if(found == 'true')  
+                   {  
+                        $(this).show();  
+                   }  
+                   else  
+                   {  
+                        $(this).hide();  
+                   }  
+              });  
+         }  
+    });  
+  </script> 
+</div>
